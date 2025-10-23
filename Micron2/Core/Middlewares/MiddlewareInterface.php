@@ -1,10 +1,10 @@
 <?php
-require_once "Micron2/Core/Classes/HttpRequest.php";
+require_once "Micron2/Core/Classes/HttpContext.php";
 
 interface IMiddleware {
     function setNext(IMiddleware $nextMiddleware): IMiddleware;
 
-    function handle(HttpRequest $request): HttpRequest | null;
+    function handle(HttpContext $context): HttpContext | null;
 }
 
 abstract class AMiddleware implements IMiddleware {
@@ -15,9 +15,9 @@ abstract class AMiddleware implements IMiddleware {
         return $nextMiddleware;
     }
 
-    public function handle(HttpRequest $request): HttpRequest | null {
+    public function handle(HttpContext $context): HttpContext | null {
         if($this->_nextHandler != null){
-            return $this->_nextHandler->handle($request);
+            return $this->_nextHandler->handle($context);
         }
         return null;
     }

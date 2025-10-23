@@ -1,17 +1,6 @@
 <?php
 
-enum HttpMethod: string
-{
-    case GET = 'GET';
-    case POST = 'POST';
-    case PUT = 'PUT';
-    case DELETE = 'DELETE';
-    case PATCH = 'PATCH';
-    case HEAD = 'HEAD';
-    case OPTIONS = 'OPTIONS';
-    case TRACE = 'TRACE';
-    case CONNECT = 'CONNECT';
-}
+require_once "Micron2/Core/Classes/HttpTypes.php";
 
 final class HttpRequest
 {
