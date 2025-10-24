@@ -8,7 +8,7 @@ interface IMiddleware {
 }
 
 abstract class AMiddleware implements IMiddleware {
-    private IMiddleware $_nextHandler = null;
+    private ?IMiddleware $_nextHandler = null;
 
     public function setNext(IMiddleware $nextMiddleware): IMiddleware {
         $this->_nextHandler = $nextMiddleware;

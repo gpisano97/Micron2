@@ -4,7 +4,7 @@ require_once "Micron2/Core/Classes/HttpContextResponse.php";
 
 final class HttpContext {
 
-    private static HttpContext | null $instance = null;
+    /* private static HttpContext | null $instance = null; */
 
     public HttpRequest $request;
 
@@ -15,11 +15,11 @@ final class HttpContext {
         $this->response = new HttpContextResponse();
     }
 
-    public static function GetInstance(){
+    /* public static function GetInstance(){
         if(self::$instance == null){
             self::$instance = new HttpContext();
         }
 
         return self::$instance;
-    }
+    } */
 }

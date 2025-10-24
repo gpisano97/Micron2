@@ -1,6 +1,6 @@
 <?php
 
-require_once "Micron2/Core/Classes/HttpContentTypes.php";
+require_once "Micron2/Core/Classes/HttpTypes.php";
 
 
 final class HttpResponse

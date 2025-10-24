@@ -1,10 +1,12 @@
 <?php
 require_once "Micron2/Core/Classes/HttpContext.php";
 require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
+require_once "Micron2/Core/WebApplicationEngine/WebApplication.php";
 final class WebApplicationBuilder
 {
 
-    private DependencyRegister $_scopedDependencyRegister;
+    private DependencyRegister $_dependencyRegister;
+    private HttpContext $_httpContext;
     private function GetRequestHeaders(): array
     {
         if (function_exists('getallheaders')) {
@@ -28,14 +30,30 @@ final class WebApplicationBuilder
 
         return $headers;
     }
+
+    public function AddDbContext(){
+        array_unshift($this->_dependencyRegister->_toCreateScopedDependency, 'NOMECLASSEDB'); 
+    }
+
+    public function AddScoped(string $className){
+        $this->_dependencyRegister->_toCreateScopedDependency[] = $className;
+    }
     public function __construct()
     {
-        $this->_scopedDependencyRegister = DependencyRegister::GetInstance();
+        $this->_dependencyRegister = new DependencyRegister();
 
-        $context = HttpContext::GetInstance();    
-        $context->request->requestBody = file_get_contents("php://input");
-        $context->request->uri = $_REQUEST["uri"];
-        $context->request->headers = $this->GetRequestHeaders();
-        $context->request->method = HttpMethod::tryFrom($_SERVER["REQUEST_METHOD"]);
+        $this->_httpContext = new HttpContext(); 
+        $this->_httpContext->request->requestBody = file_get_contents("php://input");
+        $this->_httpContext->request->uri = $_SERVER['REQUEST_URI'];
+        $this->_httpContext->request->headers = $this->GetRequestHeaders();
+        $this->_httpContext->request->method = HttpMethod::tryFrom($_SERVER["REQUEST_METHOD"]);
+    }
+
+    public function Build(){
+        
+        $this->_dependencyRegister->_createdScopedDependency["HttpContext"] = $this->_httpContext;
+
+        DependencyResolver::ResolveScoped($this->_dependencyRegister);
+        return new WebApplication($this->_dependencyRegister, $this->_httpContext);
     }
 }
