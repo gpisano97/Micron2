@@ -1,8 +1,10 @@
 <?php
 require_once "Micron2/Core/Classes/HttpContext.php";
+require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 final class WebApplicationBuilder
 {
 
+    private DependencyRegister $_scopedDependencyRegister;
     private function GetRequestHeaders(): array
     {
         if (function_exists('getallheaders')) {
@@ -28,8 +30,9 @@ final class WebApplicationBuilder
     }
     public function __construct()
     {
-        $context = HttpContext::GetInstance();
-    
+        $this->_scopedDependencyRegister = DependencyRegister::GetInstance();
+
+        $context = HttpContext::GetInstance();    
         $context->request->requestBody = file_get_contents("php://input");
         $context->request->uri = $_REQUEST["uri"];
         $context->request->headers = $this->GetRequestHeaders();
