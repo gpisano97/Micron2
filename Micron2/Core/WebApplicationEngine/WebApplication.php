@@ -9,7 +9,7 @@ require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 final class WebApplication
 {
     private IMiddleware $_nextHandler;
-    private IMiddleware $_lastHandler;
+    private ?IMiddleware $_lastHandler;
     private bool $_endpointsAdded;
 
     private DependencyRegister $_register;
@@ -43,7 +43,7 @@ final class WebApplication
     {
         $this->_lastHandler->setNext(new LastMiddleware());
 
-        $middlewareChainResult = $this->_lastHandler->handle($this->_httpContext);
+        $middlewareChainResult = $this->_nextHandler->handle($this->_httpContext);
 
         if ($middlewareChainResult == null) {
             //richiesta non gestita

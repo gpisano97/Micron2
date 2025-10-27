@@ -65,6 +65,7 @@ enum HttpHeader: string
     case CACHE_CONTROL      = 'Cache-Control';
     case CONNECTION         = 'Connection';
     case CONTENT_LENGTH     = 'Content-Length';
+    case CONTENT_DISPOSITION = 'Content-Disposition';
     case CONTENT_TYPE       = 'Content-Type';
     case DATE               = 'Date';
     case HOST               = 'Host';

@@ -1,15 +1,15 @@
 <?php
 require_once "Micron2/Core/Classes/HttpRequest.php";
-require_once "Micron2/Core/Classes/HttpContextResponse.php";
+require_once "Micron2/Core/HttpResponse.php";
 
 final class HttpContext {
 
     public HttpRequest $request;
 
-    public HttpContextResponse $response;
+    public HttpResponse $response;
 
     public function __construct(){
         $this->request = new HttpRequest();
-        $this->response = new HttpContextResponse();
+        $this->response = new HttpResponse(0, '');
     }
 }

@@ -5,8 +5,10 @@ require_once "App/Services/TestService.php";
 
 $appBuilder = new WebApplicationBuilder();
 
-$appBuilder->AddScoped(TestService::class);
+//$appBuilder->AddScoped(TestService::class);
 
 $app = $appBuilder->Build();
+
+$app->AddEndpoints();
 
 $app->Start();
