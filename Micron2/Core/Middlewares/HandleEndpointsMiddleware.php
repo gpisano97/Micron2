@@ -2,6 +2,7 @@
 require_once "Micron2/Core/Middlewares/MiddlewareInterface.php";
 require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 require_once "Micron2/Core/Controllers/Modules/ControllerDiscovery.php";
+require_once "Micron2/Core/Controllers/Modules/ControllerInvoker.php";
 require_once "Micron2/Core/Controllers/Modules/RouteMatcher.php";
 require_once "Micron2/Core/Controllers/Modules/ParametersBinder.php";
 
@@ -43,6 +44,6 @@ final class HandleEndpointsMiddleware extends AMiddleware
             $context->response->content = "Route not found.";
         }
 
-        return $context;
+        return $this->next($context);
     }
 }

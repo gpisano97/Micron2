@@ -53,8 +53,11 @@ final class RouteMatcher
         foreach ($map->all() as $meta) {
             if ($meta->httpMethod !== $requestMethod)
                 continue;
-
-            $routePath = rtrim($meta->prefix . $meta->path, '/');
+            $routePath = $meta->prefix;
+            if(!str_starts_with($meta->path, "/") ){
+                $routePath .= '/';
+            }
+            $routePath = rtrim($routePath . $meta->path, '/');
             $uriParams = self::extractUriParams($routePath, $requestUri);
 
             if ($uriParams !== null) {

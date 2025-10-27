@@ -54,7 +54,7 @@ final class DependencyResolver
                 $args[] = $register->_createdScopedDependency[$type->getName()];
             }
 
-            $register->_createdScopedDependency[$className] = new $className($args);
+            $register->_createdScopedDependency[$className] = new $className(...$args);
         }
     }
 
@@ -88,6 +88,6 @@ final class DependencyResolver
             
         }
 
-        return new $className($args);
+        return new $className(...$args);
     }
 }

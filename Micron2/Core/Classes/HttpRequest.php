@@ -10,6 +10,8 @@ final class HttpRequest
     public array $headers;
     private DateTime $createdAt;
 
+    public array $post;
+    public array $files;
     public function __construct()
     {
         $this->createdAt = new DateTime();

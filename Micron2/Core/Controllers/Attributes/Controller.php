@@ -17,7 +17,7 @@ final class Controller
     }
 }
 
-#[Attribute(Attribute::TARGET_METHOD)]
+
 class RouteMethod
 {
     private string $_path;
@@ -40,6 +40,7 @@ class RouteMethod
 }
 
 
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Get extends RouteMethod
 {
     public function __construct(string $path = '')
@@ -49,6 +50,7 @@ final class Get extends RouteMethod
 }
 
 
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Post extends RouteMethod
 {
     public function __construct(string $path = '')
@@ -58,6 +60,7 @@ final class Post extends RouteMethod
 }
 
 
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Put extends RouteMethod
 {
     public function __construct(string $path = '')
@@ -67,6 +70,7 @@ final class Put extends RouteMethod
 }
 
 
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Delete extends RouteMethod
 {
     public function __construct(string $path = '')
@@ -75,6 +79,7 @@ final class Delete extends RouteMethod
     }
 }
 
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Patch extends RouteMethod
 {
     public function __construct(string $path = '')

@@ -8,7 +8,7 @@ require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 
 final class WebApplication
 {
-    private IMiddleware $_nextHandler;
+    private IMiddleware $_firstHandler;
     private ?IMiddleware $_lastHandler;
     private bool $_endpointsAdded;
 
@@ -17,33 +17,36 @@ final class WebApplication
 
     public function __construct(DependencyRegister $register, HttpContext $context)
     {
-        $this->_nextHandler = new FirstHandler();
-        $this->_lastHandler = $this->_nextHandler;
+        $this->_firstHandler = new FirstHandler();
+        $this->_lastHandler = $this->_firstHandler;
         $this->_endpointsAdded = false;
         $this->_register = $register;
 
         $this->_httpContext = $context;
     }
 
+    /**
+     * @param class-string<AMiddleware> $middlewareClass
+     */
     public function AddMiddleware(string $middlewareClassName)
     {
-        $this->_lastHandler = $this->_lastHandler->setNext(DependencyResolver::ResolveExternal($this->_register ,$middlewareClassName));
+        $this->_lastHandler = $this->_lastHandler->setNext(DependencyResolver::ResolveExternal($this->_register, $middlewareClassName));
     }
 
     public function AddEndpoints()
     {
         if (!$this->_endpointsAdded) {
             //aggiunta Endpoint Handler
-            $this->_lastHandler->setNext(new HandleEndpointsMiddleware($this->_register));
+            $this->_lastHandler = $this->_lastHandler->setNext(new HandleEndpointsMiddleware($this->_register));
             $this->_endpointsAdded = true;
         }
     }
 
     public function Start()
     {
-        $this->_lastHandler->setNext(new LastMiddleware());
+        $this->_lastHandler = $this->_lastHandler->setNext(new LastMiddleware());
 
-        $middlewareChainResult = $this->_nextHandler->handle($this->_httpContext);
+        $middlewareChainResult = $this->_firstHandler->handle($this->_httpContext);
 
         if ($middlewareChainResult == null) {
             //richiesta non gestita

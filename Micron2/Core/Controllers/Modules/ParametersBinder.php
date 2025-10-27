@@ -22,6 +22,7 @@ final class ParameterBinder
                     'query' => $matched->queryParams,
                     'path' => $matched->uriParams,
                     'body' => json_decode($context->request->requestBody ?? '', true) ?? [],
+                    "form" => $context->request->post,
                     default => []
                 };
 
@@ -36,6 +37,7 @@ final class ParameterBinder
                 'query' => $matched->queryParams[$paramMeta->name] ?? null,
                 'path' => $matched->uriParams[$paramMeta->name] ?? null,
                 'body' => json_decode($context->request->requestBody ?? '', true)[$paramMeta->name] ?? null,
+                "form" => $context->request->post ?? null,
                 default => null
             };
 

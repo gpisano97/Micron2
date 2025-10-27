@@ -2,11 +2,13 @@
 require_once "Micron2/Core/Classes/HttpContext.php";
 require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 require_once "Micron2/Core/WebApplicationEngine/WebApplication.php";
+require_once "Micron2/Core/Classes/AppConfiguration.php";
 final class WebApplicationBuilder
 {
 
     private DependencyRegister $_dependencyRegister;
     private HttpContext $_httpContext;
+    private string $_configurationsPath = "";
     private function GetRequestHeaders(): array
     {
         if (function_exists('getallheaders')) {
@@ -31,27 +33,42 @@ final class WebApplicationBuilder
         return $headers;
     }
 
-    public function AddDbContext(){
-        array_unshift($this->_dependencyRegister->_toCreateScopedDependency, 'NOMECLASSEDB'); 
+    public function AddDbContext()
+    {
+        array_unshift($this->_dependencyRegister->_toCreateScopedDependency, 'NOMECLASSEDB');
     }
 
-    public function AddScoped(string $className){
+    /**
+     * @param class-string<AMiddleware> $middlewareClass
+     */
+    public function AddScoped(string $className)
+    {
         $this->_dependencyRegister->_toCreateScopedDependency[] = $className;
     }
     public function __construct()
     {
         $this->_dependencyRegister = new DependencyRegister();
 
-        $this->_httpContext = new HttpContext(); 
+        $this->_httpContext = new HttpContext();
         $this->_httpContext->request->requestBody = file_get_contents("php://input");
         $this->_httpContext->request->uri = $_SERVER['REQUEST_URI'];
         $this->_httpContext->request->headers = $this->GetRequestHeaders();
         $this->_httpContext->request->method = HttpMethod::tryFrom($_SERVER["REQUEST_METHOD"]);
+        $this->_httpContext->request->post = $_POST;
+        $this->_httpContext->request->files = $_FILES;
     }
 
-    public function Build(){
-        
+    public function AddConfigurations(string $path){
+        $this->_configurationsPath = $path;
+    }
+
+    public function Build()
+    {
+
         $this->_dependencyRegister->_createdScopedDependency["HttpContext"] = $this->_httpContext;
+        
+        if($this->_configurationsPath != "")
+            $this->_dependencyRegister->_createdScopedDependency[AppConfiguration::class] = new AppConfiguration($this->_configurationsPath);
 
         DependencyResolver::ResolveScoped($this->_dependencyRegister);
         return new WebApplication($this->_dependencyRegister, $this->_httpContext);
