@@ -48,8 +48,13 @@ final class WebApplication
 
         $middlewareChainResult = $this->_firstHandler->handle($this->_httpContext);
 
-        if ($middlewareChainResult == null) {
-            //richiesta non gestita
+        if($middlewareChainResult instanceof HttpResponse){
+            $this->_httpContext->response = $middlewareChainResult;
         }
+        else if ($middlewareChainResult === null) {
+            $this->_httpContext->response = HttpResponse::HttpInternalServerError500("Middleware chain endend with null");            
+        }
+
+        ResponseWriter::write($this->_httpContext);
     }
 }
