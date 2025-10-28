@@ -88,6 +88,7 @@ enum HttpHeader: string
     case ACCESS_CONTROL_ALLOW_HEADERS = 'Access-Control-Allow-Headers';
     case ACCESS_CONTROL_REQUEST_METHOD = 'Access-Control-Request-Method';
     case ACCESS_CONTROL_REQUEST_HEADERS = 'Access-Control-Request-Headers';
+    case ACCESS_CONTROL_MAX_AGE = 'Access-Control-Max-Age';
     case STRICT_TRANSPORT_SECURITY = 'Strict-Transport-Security';
     case X_FRAME_OPTIONS    = 'X-Frame-Options';
     case X_CONTENT_TYPE_OPTIONS = 'X-Content-Type-Options';

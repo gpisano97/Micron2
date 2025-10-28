@@ -10,6 +10,8 @@ $appBuilder->AddScoped(TestService::class);
 
 $appBuilder->AddConfigurations($_SERVER['DOCUMENT_ROOT']);
 
+$appBuilder->AddCors(new CorsHandlerSettings());
+
 $app = $appBuilder->Build();
 
 $app->AddEndpoints();

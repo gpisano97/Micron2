@@ -3,6 +3,8 @@ require_once "Micron2/Core/Classes/HttpContext.php";
 require_once "Micron2/Core/WebApplicationEngine/DependencyRegister.php";
 require_once "Micron2/Core/WebApplicationEngine/WebApplication.php";
 require_once "Micron2/Core/Classes/AppConfiguration.php";
+require_once "Micron2/Core/WebApplicationEngine/Modules/CorsHandler.php";
+require_once "Micron2/Core/Controllers/Modules/ResponseWriter.php";
 final class WebApplicationBuilder
 {
 
@@ -60,6 +62,16 @@ final class WebApplicationBuilder
 
     public function AddConfigurations(string $path){
         $this->_configurationsPath = $path;
+    }
+
+    public function AddCors(CorsHandlerSettings $settings){
+        $corsHandlingResponse = CorsHandler::handle($this->_httpContext, $settings);
+
+        if($corsHandlingResponse instanceof HttpResponse){
+            $this->_httpContext->response = $corsHandlingResponse;
+            ResponseWriter::write($this->_httpContext);
+            exit;
+        }
     }
 
     public function Build()
