@@ -8,6 +8,10 @@ $appBuilder = new WebApplicationBuilder();
 
 $appBuilder->AddScoped(TestService::class);
 
+$appBuilder->AddScopedWithoutDI(function (HttpContext $context, AppConfiguration $config) : object {
+    return new TsBody("ciao", "ciaone");
+});
+
 $appBuilder->AddConfigurations($_SERVER['DOCUMENT_ROOT']);
 
 $appBuilder->AddCors(new CorsHandlerSettings());

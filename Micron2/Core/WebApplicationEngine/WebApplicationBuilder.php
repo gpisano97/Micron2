@@ -11,6 +11,9 @@ final class WebApplicationBuilder
     private DependencyRegister $_dependencyRegister;
     private HttpContext $_httpContext;
     private string $_configurationsPath = "";
+
+    /** @var array<callable> */
+    private array $_scopedWithoutDI = [];
     private function GetRequestHeaders(): array
     {
         if (function_exists('getallheaders')) {
@@ -35,6 +38,21 @@ final class WebApplicationBuilder
         return $headers;
     }
 
+    private function IstantiateOutOfDi(){
+        foreach ($this->_scopedWithoutDI as $callableConstructor) {
+            $appConfiguratorInstace = null;
+            if(array_key_exists(AppConfiguration::class,$this->_dependencyRegister->_createdScopedDependency)){
+                $appConfiguratorInstace = $this->_dependencyRegister->_createdScopedDependency[AppConfiguration::class];
+            }
+            $instance = $callableConstructor(
+                $this->_dependencyRegister->_createdScopedDependency[HttpContext::class],
+                $appConfiguratorInstace
+            );
+
+            $this->_dependencyRegister->_createdScopedDependency[get_class($instance)] = $instance; 
+        }
+    }
+
     public function AddDbContext()
     {
         array_unshift($this->_dependencyRegister->_toCreateScopedDependency, 'NOMECLASSEDB');
@@ -46,6 +64,13 @@ final class WebApplicationBuilder
     public function AddScoped(string $className)
     {
         $this->_dependencyRegister->_toCreateScopedDependency[] = $className;
+    }
+
+    /**
+     * @param callable(HttpContext $context, AppConfiguration $config): object $objectConstructor
+     */
+    public function AddScopedWithoutDI(callable $objectConstructor){
+        $this->_scopedWithoutDI[] = $objectConstructor;
     }
     public function __construct()
     {
@@ -82,6 +107,8 @@ final class WebApplicationBuilder
         if($this->_configurationsPath != "")
             $this->_dependencyRegister->_createdScopedDependency[AppConfiguration::class] = new AppConfiguration($this->_configurationsPath);
 
+        $this->IstantiateOutOfDi();
+    
         DependencyResolver::ResolveScoped($this->_dependencyRegister);
         return new WebApplication($this->_dependencyRegister, $this->_httpContext);
     }
